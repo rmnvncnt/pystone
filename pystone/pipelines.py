@@ -7,11 +7,9 @@
 
 from pandas.io.json import json_normalize
 from w3lib.html import replace_escape_chars
+from scrapy.exceptions import DropItem
 
-import dateparser
-import re
-import os
-import json
+import dateparser, re, os, json
 
 class CleanCardsPipeline(object):
 
@@ -31,7 +29,7 @@ class CleanCardsPipeline(object):
             if card.get('name') == name:
                 return card['dbfId']
 
-        return None
+        raise DropItem("Unknown card")
 
     def process_item(self, item, spider):
 
@@ -40,7 +38,7 @@ class CleanCardsPipeline(object):
         item['date'] = dateparser.parse(raw_date[0])
 
         # set
-        item['deck_set'] = re.findall('\w+', ''.join(raw_date[1]))
+        item['deck_set'] = re.sub('[()]', '', ' '.join(raw_date[1:]))
 
         # deck rating
         item['rating'] = int(re.findall('\d+', item['rating'])[0])
@@ -62,7 +60,23 @@ class CleanCardsPipeline(object):
         # replace by list of ids
         item['cards'] = id_list
 
+        # deck id
+        item['deck_id'] = int(item['deck_id'])
+
         # craft cost
         item['craft_cost'] = int(item['craft_cost'])
+
+        # deck format
+        if item['deck_format']:
+            item['deck_format'] = 'W' # wild
+        else:
+            item['deck_format'] = 'S' # standard
+
+        # check if 30 cards in deck
+        if len(item['cards']) != 30:
+            raise DropItem("Incomplete deck")
+
+        # remove count
+        del item['count']
 
         return item

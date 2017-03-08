@@ -10,9 +10,14 @@ class DeckItem(Item):
     deck_archetype = Field()
     rating = Field()
     craft_cost = Field()
+    user = Field()
+    title = Field()
+    deck_id = Field()
+    deck_class = Field()
 
     # pipeline
     deck_set = Field()
+    deck_format = Field()
 
 class HearthPwnSpider(SitemapSpider):
 
@@ -59,6 +64,31 @@ class HearthPwnSpider(SitemapSpider):
         # craft cost
         item['craft_cost'] = response.css(
             "span.craft-cost::text"
+        ).extract_first()
+
+        # user name
+        item['user'] = response.css(
+            'li.name a::text'
+        ).extract_first()
+
+        # title
+        item['title'] = response.css(
+            'h2[class*="deck-title"]::text'
+        ).extract_first()
+
+        # deck id
+        item['deck_id'] = response.css(
+            '*::attr(data-deck-id)'
+        ).extract_first()
+
+        # deck class
+        item['deck_class'] = response.css(
+            'span[itemprop=title]::text'
+        ).extract()[2]
+
+        # deck format
+        item['deck_format'] = response.css(
+            'p.is-wild::text'
         ).extract_first()
 
         yield item
