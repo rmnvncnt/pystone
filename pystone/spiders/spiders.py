@@ -26,6 +26,7 @@ class HearthPwnSpider(SitemapSpider):
     sitemap_urls = ['http://www.hearthpwn.com/sitemap.xml']
     sitemap_follow = [('hsdeck')]
     sitemap_rules = [('/decks/', 'parse_item')]
+    deck_number = 0
 
     def parse_item(self, response):
         
@@ -90,5 +91,13 @@ class HearthPwnSpider(SitemapSpider):
         item['deck_format'] = response.css(
             'p.is-wild::text'
         ).extract_first()
+
+        # logging
+        self.logger.info('Processing deck n°{} @ {}'.format(
+            self.deck_number,
+            response.url
+        ))
+
+        self.deck_number += 1
 
         yield item

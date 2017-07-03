@@ -37,6 +37,9 @@ class CleanCardsPipeline(object):
         raw_date = item['date'].split()
         item['date'] = dateparser.parse(raw_date[0])
 
+        # user
+        item['user'] = replace_escape_chars(item['user'])
+
         # set
         item['deck_set'] = re.sub('[()]', '', ' '.join(raw_date[1:]))
 

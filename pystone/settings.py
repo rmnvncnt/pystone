@@ -9,11 +9,15 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'pystone'
+BOT_NAME = 'hs_data_project'
 
 SPIDER_MODULES = ['pystone.spiders']
 NEWSPIDER_MODULE = 'pystone.spiders'
 
+ROBOTSTXT_OBEY = True
+
+# Logging
+LOG_LEVEL = 'INFO'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = 'hs_data_project (http://rmnvncnt.github.io/)'
@@ -24,7 +28,7 @@ USER_AGENT = 'hs_data_project (http://rmnvncnt.github.io/)'
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-# DOWNLOAD_DELAY = 0.5
+DOWNLOAD_DELAY = 0.5
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN=16
 #CONCURRENT_REQUESTS_PER_IP=16
